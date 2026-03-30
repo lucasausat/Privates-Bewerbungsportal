@@ -5,14 +5,14 @@
         <div class="brand">Bodensee RP</div>
 
         <nav>
-            <a class="active">Übersicht</a>
+            <a class="active">Dashboard</a>
             <a>Bereiche</a>
-            <a>Informationen</a>
+            <a>Status</a>
         </nav>
 
-        <div class="sidebar-footer">
-            <span>Status</span>
-            <div class="status online"></div>
+        <div class="status-box">
+            <div class="status-dot offline"></div>
+            <span>System offline</span>
         </div>
     </aside>
 
@@ -21,42 +21,44 @@
 
         <!-- Header -->
         <header class="topbar">
-            <h1>Bewerbungsportal</h1>
-            <span class="badge">Privates Projekt</span>
+            <div>
+                <h1>Bewerbungsportal</h1>
+                <p class="subtitle">Aktuell nicht verfügbar</p>
+            </div>
         </header>
 
-        <!-- Hinweis -->
-        <div class="notice">
-            Bewerbungen sind derzeit deaktiviert. Dieses Portal dient ausschließlich als Design-Demonstration.
+        <!-- Global Notice -->
+        <div class="global-warning">
+            Bewerbungen sind derzeit geschlossen. Dieses Portal ist aktuell außer Betrieb.
         </div>
 
         <!-- Cards -->
         <section class="cards">
 
-            <div class="card">
+            <div class="card disabled">
                 <div class="card-header">
                     <h2>Moderation</h2>
-                    <span class="tag">Offen</span>
+                    <span class="badge closed">Geschlossen</span>
                 </div>
 
                 <p>
-                    Überwachung des Projekts sowie Durchsetzung der Regeln und Richtlinien.
+                    Verwaltung und Moderation des Projekts. Aktuell keine Bewerbungen möglich.
                 </p>
 
-                <button disabled>Nicht verfügbar</button>
+                <button disabled>Geschlossen</button>
             </div>
 
-            <div class="card">
+            <div class="card disabled">
                 <div class="card-header">
                     <h2>Development</h2>
-                    <span class="tag alt">Initiativ</span>
+                    <span class="badge closed">Geschlossen</span>
                 </div>
 
                 <p>
-                    Entwicklung interner Systeme und technische Betreuung der Plattform.
+                    Entwicklung und technische Betreuung. Bewerbungen derzeit pausiert.
                 </p>
 
-                <button disabled>Nicht verfügbar</button>
+                <button disabled>Geschlossen</button>
             </div>
 
         </section>
@@ -67,19 +69,21 @@
 
 <style>
 :root {
-    --bg: #1e1f22;
-    --sidebar: #2b2d31;
-    --card: #313338;
-    --text: #f2f3f5;
-    --muted: #b5bac1;
+    --bg: #1a1b1e;
+    --sidebar: #202225;
+    --card: #2a2d31;
     --accent: #5865F2;
+    --accent-soft: rgba(88,101,242,0.15);
+    --danger: #ed4245;
+    --text: #e3e5e8;
+    --muted: #9ca3af;
 }
 
 /* Base */
 body {
     margin: 0;
     font-family: system-ui, -apple-system, sans-serif;
-    background: var(--bg);
+    background: linear-gradient(180deg,#1a1b1e,#111214);
     color: var(--text);
 }
 
@@ -101,80 +105,74 @@ body {
 
 .brand {
     font-weight: 600;
-    margin-bottom: 30px;
+    font-size: 1.1rem;
+    margin-bottom: 25px;
 }
 
+/* Nav */
 .sidebar nav a {
     display: block;
     padding: 10px;
-    border-radius: 6px;
+    border-radius: 8px;
     color: var(--muted);
     margin-bottom: 5px;
-    cursor: pointer;
+    cursor: default;
 }
 
-.sidebar nav a.active,
-.sidebar nav a:hover {
-    background: var(--card);
+.sidebar nav a.active {
+    background: var(--accent-soft);
     color: white;
 }
 
-/* Footer */
-.sidebar-footer {
+/* Status */
+.status-box {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    gap: 8px;
     font-size: 0.8rem;
 }
 
-.status {
+.status-dot {
     width: 10px;
     height: 10px;
     border-radius: 50%;
 }
 
-.status.online {
-    background: #23a559;
+.status-dot.offline {
+    background: var(--danger);
+    box-shadow: 0 0 8px var(--danger);
 }
 
 /* Main */
 .main {
     flex: 1;
-    padding: 25px;
+    padding: 30px;
 }
 
-/* Topbar */
-.topbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
+/* Header */
 .topbar h1 {
-    font-size: 1.4rem;
+    font-size: 1.6rem;
+    margin: 0;
 }
 
-.badge {
-    background: rgba(88,101,242,0.15);
-    color: var(--accent);
-    padding: 5px 10px;
-    border-radius: 6px;
-    font-size: 0.8rem;
-}
-
-/* Notice */
-.notice {
-    background: #2b2d31;
-    padding: 12px;
-    border-radius: 6px;
-    margin-bottom: 20px;
+.subtitle {
     font-size: 0.9rem;
     color: var(--muted);
 }
 
+/* Warning */
+.global-warning {
+    margin-top: 20px;
+    background: rgba(237,66,69,0.1);
+    border: 1px solid rgba(237,66,69,0.3);
+    padding: 14px;
+    border-radius: 8px;
+    color: #f87171;
+}
+
 /* Cards */
 .cards {
+    margin-top: 30px;
     display: grid;
     gap: 20px;
 }
@@ -188,28 +186,29 @@ body {
 .card {
     background: var(--card);
     padding: 20px;
-    border-radius: 8px;
+    border-radius: 10px;
     border: 1px solid rgba(255,255,255,0.05);
+    transition: 0.2s;
 }
 
+.card.disabled {
+    opacity: 0.6;
+}
+
+/* Header */
 .card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-/* Tags */
-.tag {
-    font-size: 0.75rem;
-    background: #23a55922;
-    color: #23a559;
+/* Badge */
+.badge.closed {
+    background: rgba(237,66,69,0.15);
+    color: #f87171;
     padding: 4px 8px;
-    border-radius: 4px;
-}
-
-.tag.alt {
-    background: #5865F222;
-    color: #5865F2;
+    border-radius: 6px;
+    font-size: 0.75rem;
 }
 
 /* Text */
@@ -225,8 +224,8 @@ button {
     padding: 10px;
     border-radius: 6px;
     border: none;
-    background: #404249;
-    color: #80848e;
+    background: #3a3d42;
+    color: #7f848e;
     cursor: not-allowed;
 }
 </style>
