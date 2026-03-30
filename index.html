@@ -1,71 +1,9 @@
-<div class="app">
-
-    <!-- Sidebar -->
-    <aside class="sidebar">
-        <div class="brand">Bodensee RP</div>
-
-        <nav>
-            <a class="active">Dashboard</a>
-            <a>Bereiche</a>
-            <a>Status</a>
-        </nav>
-
-        <div class="status-box">
-            <div class="status-dot offline"></div>
-            <span>System offline</span>
-        </div>
-    </aside>
-
-    <!-- Main -->
-    <main class="main">
-
-        <!-- Header -->
-        <header class="topbar">
-            <div>
-                <h1>Bewerbungsportal</h1>
-                <p class="subtitle">Aktuell nicht verfügbar</p>
-            </div>
-        </header>
-
-        <!-- Global Notice -->
-        <div class="global-warning">
-            Bewerbungen sind derzeit geschlossen. Dieses Portal ist aktuell außer Betrieb.
-        </div>
-
-        <!-- Cards -->
-        <section class="cards">
-
-            <div class="card disabled">
-                <div class="card-header">
-                    <h2>Moderation</h2>
-                    <span class="badge closed">Geschlossen</span>
-                </div>
-
-                <p>
-                    Verwaltung und Moderation des Projekts. Aktuell keine Bewerbungen möglich.
-                </p>
-
-                <button disabled>Geschlossen</button>
-            </div>
-
-            <div class="card disabled">
-                <div class="card-header">
-                    <h2>Development</h2>
-                    <span class="badge closed">Geschlossen</span>
-                </div>
-
-                <p>
-                    Entwicklung und technische Betreuung. Bewerbungen derzeit pausiert.
-                </p>
-
-                <button disabled>Geschlossen</button>
-            </div>
-
-        </section>
-
-    </main>
-
-</div>
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bewerbungsportal</title>
 
 <style>
 :root {
@@ -77,6 +15,21 @@
     --danger: #ed4245;
     --text: #e3e5e8;
     --muted: #9ca3af;
+}
+
+/* 🔐 ENCRYPTION */
+#encryptionScreen {
+    position:fixed;
+    width:100%;
+    height:100%;
+    background:black;
+    color:#00ff9f;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    z-index:9999;
+    font-family:monospace;
 }
 
 /* Base */
@@ -109,14 +62,12 @@ body {
     margin-bottom: 25px;
 }
 
-/* Nav */
 .sidebar nav a {
     display: block;
     padding: 10px;
     border-radius: 8px;
     color: var(--muted);
     margin-bottom: 5px;
-    cursor: default;
 }
 
 .sidebar nav a.active {
@@ -124,7 +75,6 @@ body {
     color: white;
 }
 
-/* Status */
 .status-box {
     display: flex;
     align-items: center;
@@ -149,14 +99,11 @@ body {
     padding: 30px;
 }
 
-/* Header */
 .topbar h1 {
-    font-size: 1.6rem;
     margin: 0;
 }
 
 .subtitle {
-    font-size: 0.9rem;
     color: var(--muted);
 }
 
@@ -177,32 +124,13 @@ body {
     gap: 20px;
 }
 
-@media(min-width:700px){
-    .cards {
-        grid-template-columns: 1fr 1fr;
-    }
-}
-
 .card {
     background: var(--card);
     padding: 20px;
     border-radius: 10px;
-    border: 1px solid rgba(255,255,255,0.05);
-    transition: 0.2s;
-}
-
-.card.disabled {
     opacity: 0.6;
 }
 
-/* Header */
-.card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-/* Badge */
 .badge.closed {
     background: rgba(237,66,69,0.15);
     color: #f87171;
@@ -211,14 +139,6 @@ body {
     font-size: 0.75rem;
 }
 
-/* Text */
-.card p {
-    font-size: 0.9rem;
-    color: var(--muted);
-    margin: 15px 0;
-}
-
-/* Button */
 button {
     width: 100%;
     padding: 10px;
@@ -226,6 +146,124 @@ button {
     border: none;
     background: #3a3d42;
     color: #7f848e;
-    cursor: not-allowed;
 }
 </style>
+</head>
+
+<body>
+
+<!-- 🔐 ENCRYPTION SCREEN -->
+<div id="encryptionScreen">
+    <h1>🔐 ENCRYPTING CONNECTION...</h1>
+    <p id="encText">Initializing...</p>
+</div>
+
+<!-- 🧠 DEIN UI -->
+<div class="app" id="appContent">
+
+    <aside class="sidebar">
+        <div class="brand"> Bewerbung</div>
+
+        <nav>
+            <a class="active">Dashboard</a>
+            <a>Bereiche</a>
+            <a>Status</a>
+        </nav>
+
+        <div class="status-box">
+            <div class="status-dot offline"></div>
+            <span>System offline</span>
+        </div>
+    </aside>
+
+    <main class="main">
+        <header class="topbar">
+            <h1>Bewerbungsportal</h1>
+            <p class="subtitle">Aktuell nicht verfügbar</p>
+        </header>
+
+        <div class="global-warning">
+            Bewerbungen sind derzeit geschlossen. Dieses Portal ist aktuell außer Betrieb.
+        </div>
+
+        <section class="cards">
+            <div class="card">
+                <h2>Moderation</h2>
+                <span class="badge closed">Geschlossen</span>
+                <p>Aktuell keine Bewerbungen möglich.</p>
+                <button disabled>Geschlossen</button>
+            </div>
+
+            <div class="card">
+                <h2>Development</h2>
+                <span class="badge closed">Geschlossen</span>
+                <p>Bewerbungen derzeit pausiert.</p>
+                <button disabled>Geschlossen</button>
+            </div>
+        </section>
+    </main>
+
+</div>
+
+<script>
+
+/* ⏳ DATE SYSTEM */
+function checkDate() {
+    const now = new Date();
+    const year = now.getFullYear();
+
+    const marchStart = new Date(year, 2, 31, 0, 0, 0);
+    const aprilLock = new Date(year, 3, 1, 23, 50, 0);
+
+    if (now < marchStart) {
+        document.body.innerHTML = "<h1 style='padding:100px;'>⛔ Noch nicht verfügbar</h1>";
+        return;
+    }
+
+    if (now >= aprilLock) {
+        document.body.innerHTML = `
+        <div style="display:flex;justify-content:center;align-items:center;height:100vh;font-family:monospace;color:red;text-align:center;">
+            <div>
+                <h1>🔒 SYSTEM LOCKED</h1>
+                <p>Zugriff dauerhaft gesperrt</p>
+            </div>
+        </div>`;
+        return;
+    }
+}
+
+checkDate();
+
+/* 🔐 ENCRYPTION */
+const msgs = [
+"> Generating keys...",
+"> Encrypting traffic...",
+"> Routing nodes...",
+"> Masking identity...",
+"> Secure ✔"
+];
+
+let i = 0;
+
+function runEncryption(){
+    const el = document.getElementById("encText");
+
+    let int = setInterval(()=>{
+        el.innerText = msgs[i];
+        i++;
+
+        if(i >= msgs.length){
+            clearInterval(int);
+            setTimeout(()=>{
+                document.getElementById("encryptionScreen").style.display="none";
+            },800);
+        }
+    },600);
+}
+
+runEncryption();
+
+</script>
+
+</body>
+</html>
