@@ -1,0 +1,232 @@
+<div class="app">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="brand">Bodensee RP</div>
+
+        <nav>
+            <a class="active">Übersicht</a>
+            <a>Bereiche</a>
+            <a>Informationen</a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <span>Status</span>
+            <div class="status online"></div>
+        </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+
+        <!-- Header -->
+        <header class="topbar">
+            <h1>Bewerbungsportal</h1>
+            <span class="badge">Privates Projekt</span>
+        </header>
+
+        <!-- Hinweis -->
+        <div class="notice">
+            Bewerbungen sind derzeit deaktiviert. Dieses Portal dient ausschließlich als Design-Demonstration.
+        </div>
+
+        <!-- Cards -->
+        <section class="cards">
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>Moderation</h2>
+                    <span class="tag">Offen</span>
+                </div>
+
+                <p>
+                    Überwachung des Projekts sowie Durchsetzung der Regeln und Richtlinien.
+                </p>
+
+                <button disabled>Nicht verfügbar</button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>Development</h2>
+                    <span class="tag alt">Initiativ</span>
+                </div>
+
+                <p>
+                    Entwicklung interner Systeme und technische Betreuung der Plattform.
+                </p>
+
+                <button disabled>Nicht verfügbar</button>
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+<style>
+:root {
+    --bg: #1e1f22;
+    --sidebar: #2b2d31;
+    --card: #313338;
+    --text: #f2f3f5;
+    --muted: #b5bac1;
+    --accent: #5865F2;
+}
+
+/* Base */
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+/* Layout */
+.app {
+    display: flex;
+    height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 240px;
+    background: var(--sidebar);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.brand {
+    font-weight: 600;
+    margin-bottom: 30px;
+}
+
+.sidebar nav a {
+    display: block;
+    padding: 10px;
+    border-radius: 6px;
+    color: var(--muted);
+    margin-bottom: 5px;
+    cursor: pointer;
+}
+
+.sidebar nav a.active,
+.sidebar nav a:hover {
+    background: var(--card);
+    color: white;
+}
+
+/* Footer */
+.sidebar-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+}
+
+.status {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.status.online {
+    background: #23a559;
+}
+
+/* Main */
+.main {
+    flex: 1;
+    padding: 25px;
+}
+
+/* Topbar */
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.topbar h1 {
+    font-size: 1.4rem;
+}
+
+.badge {
+    background: rgba(88,101,242,0.15);
+    color: var(--accent);
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+}
+
+/* Notice */
+.notice {
+    background: #2b2d31;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+    color: var(--muted);
+}
+
+/* Cards */
+.cards {
+    display: grid;
+    gap: 20px;
+}
+
+@media(min-width:700px){
+    .cards {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.card {
+    background: var(--card);
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Tags */
+.tag {
+    font-size: 0.75rem;
+    background: #23a55922;
+    color: #23a559;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.tag.alt {
+    background: #5865F222;
+    color: #5865F2;
+}
+
+/* Text */
+.card p {
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin: 15px 0;
+}
+
+/* Button */
+button {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+    background: #404249;
+    color: #80848e;
+    cursor: not-allowed;
+}
+</style>
