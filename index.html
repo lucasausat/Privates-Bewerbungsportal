@@ -7,261 +7,316 @@
 
 <style>
 :root {
-    --bg: #1a1b1e;
-    --sidebar: #202225;
-    --card: #2a2d31;
-    --accent: #5865F2;
-    --accent-soft: rgba(88,101,242,0.15);
-    --danger: #ed4245;
-    --text: #e3e5e8;
-    --muted: #9ca3af;
+    --bg:#1a1b1e;
+    --sidebar:#202225;
+    --card:#2a2d31;
+    --accent:#5865F2;
+    --danger:#ed4245;
+    --text:#e3e5e8;
+    --muted:#9ca3af;
 }
 
-/* 🔐 ENCRYPTION */
+/* 🔐 ULTRA MODERN LOCK SCREEN */
 #encryptionScreen {
     position:fixed;
     width:100%;
     height:100%;
-    background:black;
-    color:#00ff9f;
+    background: radial-gradient(circle at top,#202225,#0e0f11);
     display:flex;
-    flex-direction:column;
     align-items:center;
     justify-content:center;
     z-index:9999;
-    font-family:monospace;
 }
 
-/* Base */
+.lock-card {
+    width:360px;
+    background:var(--card);
+    padding:30px;
+    border-radius:16px;
+    box-shadow:0 30px 80px rgba(0,0,0,0.7);
+    text-align:center;
+}
+
+.lock-title {
+    font-size:18px;
+    font-weight:600;
+}
+
+.lock-sub {
+    font-size:13px;
+    color:var(--muted);
+    margin-top:8px;
+}
+
+.progress {
+    margin-top:20px;
+    height:6px;
+    background:#111;
+    border-radius:10px;
+    overflow:hidden;
+}
+
+.progress-bar {
+    height:100%;
+    width:0%;
+    background:var(--accent);
+}
+
+.log-box {
+    margin-top:15px;
+    font-size:11px;
+    color:var(--muted);
+    text-align:left;
+    max-height:80px;
+    overflow:hidden;
+}
+
+/* UI */
 body {
-    margin: 0;
-    font-family: system-ui, -apple-system, sans-serif;
-    background: linear-gradient(180deg,#1a1b1e,#111214);
-    color: var(--text);
+    margin:0;
+    font-family:system-ui;
+    background:linear-gradient(#1a1b1e,#111);
+    color:var(--text);
 }
 
-/* Layout */
-.app {
-    display: flex;
-    height: 100vh;
-}
+.app { display:flex; height:100vh; }
 
-/* Sidebar */
 .sidebar {
-    width: 240px;
-    background: var(--sidebar);
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    width:240px;
+    background:var(--sidebar);
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
 }
 
-.brand {
-    font-weight: 600;
-    font-size: 1.1rem;
-    margin-bottom: 25px;
-}
+.main { flex:1; padding:30px; }
 
-.sidebar nav a {
-    display: block;
-    padding: 10px;
-    border-radius: 8px;
-    color: var(--muted);
-    margin-bottom: 5px;
-}
-
-.sidebar nav a.active {
-    background: var(--accent-soft);
-    color: white;
-}
-
-.status-box {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.8rem;
-}
-
-.status-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-}
-
-.status-dot.offline {
-    background: var(--danger);
-    box-shadow: 0 0 8px var(--danger);
-}
-
-/* Main */
-.main {
-    flex: 1;
-    padding: 30px;
-}
-
-.topbar h1 {
-    margin: 0;
-}
-
-.subtitle {
-    color: var(--muted);
-}
-
-/* Warning */
 .global-warning {
-    margin-top: 20px;
-    background: rgba(237,66,69,0.1);
-    border: 1px solid rgba(237,66,69,0.3);
-    padding: 14px;
-    border-radius: 8px;
-    color: #f87171;
+    margin-top:20px;
+    background:rgba(237,66,69,0.1);
+    padding:10px;
+    border-radius:8px;
 }
 
-/* Cards */
-.cards {
-    margin-top: 30px;
-    display: grid;
-    gap: 20px;
+/* LOGIN */
+.login-box {
+    margin-top:20px;
+    background:var(--card);
+    padding:20px;
+    border-radius:10px;
+    max-width:300px;
 }
 
-.card {
-    background: var(--card);
-    padding: 20px;
-    border-radius: 10px;
-    opacity: 0.6;
-}
-
-.badge.closed {
-    background: rgba(237,66,69,0.15);
-    color: #f87171;
-    padding: 4px 8px;
-    border-radius: 6px;
-    font-size: 0.75rem;
+input {
+    width:100%;
+    padding:10px;
+    margin-bottom:10px;
+    background:#111;
+    border:none;
+    color:white;
+    border-radius:6px;
 }
 
 button {
-    width: 100%;
-    padding: 10px;
-    border-radius: 6px;
-    border: none;
-    background: #3a3d42;
-    color: #7f848e;
+    width:100%;
+    padding:10px;
+    border:none;
+    border-radius:6px;
+    background:var(--accent);
+    color:white;
+    cursor:pointer;
+}
+
+/* GLITCH */
+.glitch { animation:glitch 0.2s infinite; }
+@keyframes glitch {
+    50%{transform:translate(-3px,3px);}
 }
 </style>
 </head>
 
 <body>
 
-<!-- 🔐 ENCRYPTION SCREEN -->
+<!-- 🔐 LOCK -->
 <div id="encryptionScreen">
-    <h1>🔐 ENCRYPTING CONNECTION...</h1>
-    <p id="encText">Initializing...</p>
+    <div class="lock-card">
+        <div class="lock-title">Sichere Verbindung wird aufgebaut</div>
+        <div class="lock-sub" id="encText">Initialisierung...</div>
+
+        <div class="progress">
+            <div class="progress-bar" id="bar"></div>
+        </div>
+
+        <div class="log-box" id="logBox"></div>
+    </div>
 </div>
 
-<!-- 🧠 DEIN UI -->
-<div class="app" id="appContent">
+<!-- 💻 UI -->
+<div class="app">
 
     <aside class="sidebar">
-        <div class="brand"> Bewerbung</div>
-
-        <nav>
-            <a class="active">Dashboard</a>
-            <a>Bereiche</a>
-            <a>Status</a>
-        </nav>
-
-        <div class="status-box">
-            <div class="status-dot offline"></div>
-            <span>System offline</span>
-        </div>
+        <div>Bewerbung</div>
+        <div>System offline</div>
     </aside>
 
     <main class="main">
-        <header class="topbar">
-            <h1>Bewerbungsportal</h1>
-            <p class="subtitle">Aktuell nicht verfügbar</p>
-        </header>
+        <h1>Bewerbungsportal</h1>
 
-        <div class="global-warning">
-            Bewerbungen sind derzeit geschlossen. Dieses Portal ist aktuell außer Betrieb.
+        <div class="global-warning" id="warning">
+            Bewerbungen sind derzeit geschlossen.
         </div>
 
-        <section class="cards">
-            <div class="card">
-                <h2>Moderation</h2>
-                <span class="badge closed">Geschlossen</span>
-                <p>Aktuell keine Bewerbungen möglich.</p>
-                <button disabled>Geschlossen</button>
+        <!-- 💀 FAKE LOGIN -->
+        <div class="login-box">
+            <input placeholder="User ID">
+            <input placeholder="Passwort" type="password">
+            <button onclick="fakeLogin()">Login</button>
+
+            <div class="progress" style="margin-top:10px;">
+                <div class="progress-bar" id="loginBar"></div>
             </div>
 
-            <div class="card">
-                <h2>Development</h2>
-                <span class="badge closed">Geschlossen</span>
-                <p>Bewerbungen derzeit pausiert.</p>
-                <button disabled>Geschlossen</button>
-            </div>
-        </section>
+            <p id="status"></p>
+        </div>
     </main>
 
 </div>
 
 <script>
 
-/* ⏳ DATE SYSTEM */
-function checkDate() {
-    const now = new Date();
-    const year = now.getFullYear();
-
-    const marchStart = new Date(year, 2, 31, 0, 0, 0);
-    const aprilLock = new Date(year, 3, 1, 23, 50, 0);
-
-    if (now < marchStart) {
-        document.body.innerHTML = "<h1 style='padding:100px;'>⛔ Noch nicht verfügbar</h1>";
-        return;
-    }
-
-    if (now >= aprilLock) {
-        document.body.innerHTML = `
-        <div style="display:flex;justify-content:center;align-items:center;height:100vh;font-family:monospace;color:red;text-align:center;">
-            <div>
-                <h1>🔒 SYSTEM LOCKED</h1>
-                <p>Zugriff dauerhaft gesperrt</p>
-            </div>
-        </div>`;
-        return;
-    }
+/* ⏳ ZEIT */
+function getDates(){
+    const y = new Date().getFullYear();
+    return {
+        open:new Date(y,2,31,23,50),
+        close:new Date(y,3,1,23,50)
+    };
 }
 
-checkDate();
+function isOpen(){
+    const now=new Date();
+    const {open,close}=getDates();
+    return now>=open && now<close;
+}
 
-/* 🔐 ENCRYPTION */
-const msgs = [
-"> Generating keys...",
-"> Encrypting traffic...",
-"> Routing nodes...",
-"> Masking identity...",
-"> Secure ✔"
+/* 🔐 ENCRYPTION + LOGS */
+const encMsgs=[
+"TLS Handshake...",
+"Authentifizierung...",
+"Server wird erreicht...",
+"Daten werden verschlüsselt..."
 ];
 
-let i = 0;
+const logs=[
+"[SYS] Verbindung initiiert",
+"[SEC] Zertifikat geprüft",
+"[NET] Paketverlust erkannt",
+"[ERR] Retry...",
+"[OK] Verbindung stabil"
+];
 
 function runEncryption(){
-    const el = document.getElementById("encText");
+    const text=document.getElementById("encText");
+    const bar=document.getElementById("bar");
+    const logBox=document.getElementById("logBox");
 
-    let int = setInterval(()=>{
-        el.innerText = msgs[i];
+    let p=0,i=0;
+
+    let int=setInterval(()=>{
+        text.innerText=encMsgs[i%encMsgs.length];
         i++;
 
-        if(i >= msgs.length){
+        p+=15;
+        bar.style.width=p+"%";
+
+        logBox.innerHTML+="<div>"+logs[Math.floor(Math.random()*logs.length)]+"</div>";
+
+        if(p>=100){
             clearInterval(int);
+
             setTimeout(()=>{
-                document.getElementById("encryptionScreen").style.display="none";
-            },800);
+                if(isOpen()){
+                    document.getElementById("encryptionScreen").style.display="none";
+                    startFakeSystem();
+                }else{
+                    text.innerText="🔒 Kein Zugriff – System gesperrt";
+                }
+            },1000);
         }
-    },600);
+    },700);
 }
 
 runEncryption();
+
+/* 🤡 FAKE SYSTEM */
+function startFakeSystem(){
+
+    const warn=document.getElementById("warning");
+
+    const fakeMsgs=[
+        "Server nicht erreichbar...",
+        "API Fehler...",
+        "Datenbank Timeout...",
+        "Verbindung getrennt...",
+        "User wird überprüft..."
+    ];
+
+    setInterval(()=>{
+        warn.innerText=fakeMsgs[Math.floor(Math.random()*fakeMsgs.length)];
+    },3000);
+
+}
+
+/* 💀 LOGIN BUG */
+function fakeLogin(){
+    const bar=document.getElementById("loginBar");
+    const status=document.getElementById("status");
+
+    let p=0;
+
+    let int=setInterval(()=>{
+        p+=Math.random()*20;
+        if(p>=99){
+            p=99;
+            clearInterval(int);
+
+            status.innerText="❌ Fehler... Zugriff verweigert";
+        }
+
+        bar.style.width=p+"%";
+        status.innerText="Verbindung wird hergestellt...";
+    },300);
+}
+
+/* 🤡 APRIL ESCALATION */
+function aprilPrank(){
+    const now=new Date();
+
+    if(now.getMonth()===3 && now.getDate()===1){
+        setTimeout(()=>{
+            document.body.classList.add("glitch");
+
+            setTimeout(()=>{
+                document.body.innerHTML=`
+                <h1 style="padding:100px;">
+                💀 SYSTEM ÜBERNOMMEN<br><br>
+                Daten werden kopiert...
+                </h1>`;
+            },5000);
+
+            setTimeout(()=>{
+                document.body.innerHTML=`
+                <h1 style="padding:100px;">
+                🤡 APRIL APRIL 😂
+                </h1>`;
+            },10000);
+
+        },8000);
+    }
+}
+
+aprilPrank();
 
 </script>
 
