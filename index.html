@@ -16,7 +16,30 @@
     --muted:#9ca3af;
 }
 
-/* 🔐 ULTRA MODERN LOCK SCREEN */
+body {
+    margin:0;
+    font-family:system-ui;
+    background:linear-gradient(#1a1b1e,#111);
+    color:var(--text);
+    overflow:hidden;
+}
+
+/* TERMINAL OVERLAY */
+#terminal{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    font-size:11px;
+    color:#00ff9f;
+    opacity:0.08;
+    pointer-events:none;
+    font-family:monospace;
+    padding:10px;
+}
+
+/* LOCK SCREEN */
 #encryptionScreen {
     position:fixed;
     width:100%;
@@ -33,19 +56,7 @@
     background:var(--card);
     padding:30px;
     border-radius:16px;
-    box-shadow:0 30px 80px rgba(0,0,0,0.7);
     text-align:center;
-}
-
-.lock-title {
-    font-size:18px;
-    font-weight:600;
-}
-
-.lock-sub {
-    font-size:13px;
-    color:var(--muted);
-    margin-top:8px;
 }
 
 .progress {
@@ -62,44 +73,17 @@
     background:var(--accent);
 }
 
-.log-box {
-    margin-top:15px;
-    font-size:11px;
-    color:var(--muted);
-    text-align:left;
-    max-height:80px;
-    overflow:hidden;
-}
-
 /* UI */
-body {
-    margin:0;
-    font-family:system-ui;
-    background:linear-gradient(#1a1b1e,#111);
-    color:var(--text);
-}
-
 .app { display:flex; height:100vh; }
 
 .sidebar {
     width:240px;
     background:var(--sidebar);
     padding:20px;
-    display:flex;
-    flex-direction:column;
-    justify-content:space-between;
 }
 
 .main { flex:1; padding:30px; }
 
-.global-warning {
-    margin-top:20px;
-    background:rgba(237,66,69,0.1);
-    padding:10px;
-    border-radius:8px;
-}
-
-/* LOGIN */
 .login-box {
     margin-top:20px;
     background:var(--card);
@@ -108,215 +92,188 @@ body {
     max-width:300px;
 }
 
-input {
+input,button{
     width:100%;
     padding:10px;
     margin-bottom:10px;
-    background:#111;
     border:none;
-    color:white;
     border-radius:6px;
 }
 
-button {
-    width:100%;
-    padding:10px;
-    border:none;
-    border-radius:6px;
-    background:var(--accent);
-    color:white;
+input{ background:#111; color:white; }
+button{ background:var(--accent); color:white; cursor:pointer; }
+
+/* FILE SYSTEM */
+.files{
+    margin-top:20px;
+    background:#111;
+    padding:15px;
+    border-radius:10px;
+}
+
+.file{
+    padding:8px;
     cursor:pointer;
 }
+.file:hover{ background:#222; }
 
-/* GLITCH */
+/* GLITCH + SHAKE */
 .glitch { animation:glitch 0.2s infinite; }
-@keyframes glitch {
-    50%{transform:translate(-3px,3px);}
+@keyframes glitch {50%{transform:translate(-3px,3px);}}
+
+.shake{animation:shake 0.3s;}
+@keyframes shake{
+0%{transform:translateX(0);}
+25%{transform:translateX(-5px);}
+50%{transform:translateX(5px);}
+75%{transform:translateX(-5px);}
+100%{transform:translateX(0);}
 }
 </style>
 </head>
 
 <body>
 
-<!-- 🔐 LOCK -->
+<div id="terminal"></div>
+
+<!-- LOCK -->
 <div id="encryptionScreen">
     <div class="lock-card">
-        <div class="lock-title">Sichere Verbindung wird aufgebaut</div>
-        <div class="lock-sub" id="encText">Initialisierung...</div>
-
-        <div class="progress">
-            <div class="progress-bar" id="bar"></div>
-        </div>
-
-        <div class="log-box" id="logBox"></div>
+        <div id="encText">Initialisierung...</div>
+        <div class="progress"><div class="progress-bar" id="bar"></div></div>
     </div>
 </div>
 
-<!-- 💻 UI -->
 <div class="app">
 
-    <aside class="sidebar">
-        <div>Bewerbung</div>
-        <div>System offline</div>
-    </aside>
+<aside class="sidebar">
+    <div>Bewerbung</div>
+    <div>System offline</div>
+</aside>
 
-    <main class="main">
-        <h1>Bewerbungsportal</h1>
+<main class="main">
+<h1>Bewerbungsportal</h1>
 
-        <div class="global-warning" id="warning">
-            Bewerbungen sind derzeit geschlossen.
-        </div>
+<div id="warning">Bewerbungen geschlossen</div>
 
-        <!-- 💀 FAKE LOGIN -->
-        <div class="login-box">
-            <input placeholder="User ID">
-            <input placeholder="Passwort" type="password">
-            <button onclick="fakeLogin()">Login</button>
+<div class="login-box">
+    <input placeholder="User ID">
+    <input placeholder="Passwort" type="password">
+    <button onclick="fakeLogin()">Login</button>
 
-            <div class="progress" style="margin-top:10px;">
-                <div class="progress-bar" id="loginBar"></div>
-            </div>
+    <div class="progress"><div class="progress-bar" id="loginBar"></div></div>
+    <p id="status"></p>
+</div>
 
-            <p id="status"></p>
-        </div>
-    </main>
+<!-- FILE SYSTEM -->
+<div class="files">
+    <div class="file" onclick="fakeDownload()">📁 user_data.zip</div>
+    <div class="file" onclick="fakeDownload()">📁 passwords.db</div>
+    <div class="file" onclick="fakeDownload()">📁 admin_access.key</div>
+</div>
 
+</main>
 </div>
 
 <script>
 
-/* ⏳ ZEIT */
-function getDates(){
-    const y = new Date().getFullYear();
-    return {
-        open:new Date(y,2,31,23,50),
-        close:new Date(y,3,1,23,50)
-    };
-}
-
-function isOpen(){
-    const now=new Date();
-    const {open,close}=getDates();
-    return now>=open && now<close;
-}
-
-/* 🔐 ENCRYPTION + LOGS */
-const encMsgs=[
-"TLS Handshake...",
-"Authentifizierung...",
-"Server wird erreicht...",
-"Daten werden verschlüsselt..."
+/* TERMINAL */
+const lines=[
+"root@server:~# init...",
+"loading modules...",
+"bypass firewall...",
+"injecting packets..."
 ];
 
-const logs=[
-"[SYS] Verbindung initiiert",
-"[SEC] Zertifikat geprüft",
-"[NET] Paketverlust erkannt",
-"[ERR] Retry...",
-"[OK] Verbindung stabil"
-];
+setInterval(()=>{
+    const t=document.getElementById("terminal");
+    t.innerHTML+=lines[Math.random()*lines.length|0]+"<br>";
+    t.scrollTop=t.scrollHeight;
+},200);
 
+/* ENCRYPTION */
 function runEncryption(){
-    const text=document.getElementById("encText");
+    let p=0;
     const bar=document.getElementById("bar");
-    const logBox=document.getElementById("logBox");
 
-    let p=0,i=0;
-
-    let int=setInterval(()=>{
-        text.innerText=encMsgs[i%encMsgs.length];
-        i++;
-
-        p+=15;
+    const int=setInterval(()=>{
+        p+=10;
         bar.style.width=p+"%";
-
-        logBox.innerHTML+="<div>"+logs[Math.floor(Math.random()*logs.length)]+"</div>";
 
         if(p>=100){
             clearInterval(int);
-
-            setTimeout(()=>{
-                if(isOpen()){
-                    document.getElementById("encryptionScreen").style.display="none";
-                    startFakeSystem();
-                }else{
-                    text.innerText="🔒 Kein Zugriff – System gesperrt";
-                }
-            },1000);
+            document.getElementById("encryptionScreen").style.display="none";
         }
-    },700);
+    },300);
 }
-
 runEncryption();
 
-/* 🤡 FAKE SYSTEM */
-function startFakeSystem(){
-
-    const warn=document.getElementById("warning");
-
-    const fakeMsgs=[
-        "Server nicht erreichbar...",
-        "API Fehler...",
-        "Datenbank Timeout...",
-        "Verbindung getrennt...",
-        "User wird überprüft..."
-    ];
-
-    setInterval(()=>{
-        warn.innerText=fakeMsgs[Math.floor(Math.random()*fakeMsgs.length)];
-    },3000);
-
-}
-
-/* 💀 LOGIN BUG */
+/* LOGIN */
 function fakeLogin(){
+    document.body.classList.add("shake");
+
     const bar=document.getElementById("loginBar");
     const status=document.getElementById("status");
 
     let p=0;
 
-    let int=setInterval(()=>{
-        p+=Math.random()*20;
+    const int=setInterval(()=>{
+        p+=Math.random()*25;
+
         if(p>=99){
             p=99;
             clearInterval(int);
-
-            status.innerText="❌ Fehler... Zugriff verweigert";
+            status.innerText="❌ Zugriff verweigert";
         }
 
         bar.style.width=p+"%";
-        status.innerText="Verbindung wird hergestellt...";
-    },300);
+        status.innerText="Verbindung...";
+    },200);
 }
 
-/* 🤡 APRIL ESCALATION */
-function aprilPrank(){
-    const now=new Date();
+/* DOWNLOAD */
+function fakeDownload(){
+    const status=document.getElementById("status");
 
-    if(now.getMonth()===3 && now.getDate()===1){
-        setTimeout(()=>{
-            document.body.classList.add("glitch");
+    let p=0;
 
-            setTimeout(()=>{
-                document.body.innerHTML=`
-                <h1 style="padding:100px;">
-                💀 SYSTEM ÜBERNOMMEN<br><br>
-                Daten werden kopiert...
-                </h1>`;
-            },5000);
+    const int=setInterval(()=>{
+        p+=15;
+        status.innerText="Download "+p+"%";
 
-            setTimeout(()=>{
-                document.body.innerHTML=`
-                <h1 style="padding:100px;">
-                🤡 APRIL APRIL 😂
-                </h1>`;
-            },10000);
-
-        },8000);
-    }
+        if(p>=100){
+            clearInterval(int);
+            triggerBreach();
+        }
+    },150);
 }
 
-aprilPrank();
+/* BREACH */
+function triggerBreach(){
+    document.body.classList.add("glitch");
+
+    const msgs=[
+        "⚠️ UNAUTORISIERTER ZUGRIFF",
+        "IP wird getrackt...",
+        "NATO informiert..."
+    ];
+
+    let i=0;
+
+    const int=setInterval(()=>{
+        document.getElementById("warning").innerText=msgs[i%msgs.length];
+        i++;
+    },400);
+
+    setTimeout(()=>{
+        clearInterval(int);
+        document.body.innerHTML="<h1 style='padding:100px'>💀 SYSTEM LOCKDOWN</h1>";
+    },4000);
+
+    setTimeout(()=>{
+        document.body.innerHTML="<h1 style='padding:100px'>🤡 APRIL APRIL 😂</h1>";
+    },8000);
+}
 
 </script>
 
