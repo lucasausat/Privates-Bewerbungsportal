@@ -3,312 +3,218 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bewerbungsportal</title>
+<title>Systemprüfung</title>
 
 <style>
-:root {
-    --bg:#1a1b1e;
-    --sidebar:#202225;
-    --card:#2a2d31;
-    --accent:#5865F2;
-    --text:#e3e5e8;
-}
-
-body {
+body{
     margin:0;
-    font-family:system-ui;
-    background:linear-gradient(#1a1b1e,#111);
-    color:var(--text);
+    background:#0c0d10;
+    color:#e3e5e8;
+    font-family:monospace;
     overflow:hidden;
 }
 
-/* TERMINAL */
-#terminal{
-    position:fixed;
-    width:100%;
-    height:100%;
-    font-size:11px;
-    color:#00ff9f;
-    opacity:0.07;
-    pointer-events:none;
-    font-family:monospace;
-    padding:10px;
-}
-
-/* LOCK */
-#encryptionScreen {
-    position:fixed;
-    width:100%;
-    height:100%;
-    background:#0e0f11;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    z-index:9999;
-}
-
-.lock-card {
-    width:300px;
-    background:#222;
+/* PANEL */
+.container{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:420px;
+    background:#1a1b1e;
     padding:25px;
     border-radius:12px;
-    text-align:center;
 }
 
-.progress {
+.title{font-size:18px;}
+.phase{font-size:12px;color:#9ca3af;margin-top:5px;}
+
+.progress{height:6px;background:#111;margin-top:15px;}
+.bar{height:100%;width:0%;background:#5865F2;}
+
+.log{
+    font-size:11px;
     margin-top:15px;
-    height:5px;
-    background:#111;
+    color:#9ca3af;
+    height:90px;
+    overflow:hidden;
 }
 
-.progress-bar {
-    height:100%;
-    width:0%;
-    background:#5865F2;
-}
-
-/* UI */
-.app { display:flex; height:100vh; }
-.sidebar { width:220px; background:#202225; padding:20px; }
-.main { flex:1; padding:30px; }
-
-.login-box {
-    margin-top:20px;
-    background:#2a2d31;
-    padding:20px;
-    border-radius:10px;
-    max-width:280px;
-}
-
-input,button{
+/* TAKEOVER */
+#takeover{
+    position:fixed;
+    top:0;
+    left:0;
     width:100%;
-    padding:10px;
-    margin-bottom:10px;
-    border:none;
-    border-radius:6px;
+    height:100%;
+    background:#000;
+    color:#00ff9f;
+    padding:30px;
+    display:none;
 }
 
-input{ background:#111; color:white; }
-button{ background:#5865F2; color:white; cursor:pointer; }
-
-.files{
-    margin-top:20px;
-    background:#111;
-    padding:15px;
-    border-radius:10px;
+/* APRIL */
+.april{
+    position:fixed;
+    bottom:10px;
+    right:15px;
+    font-size:12px;
+    color:#888;
 }
-.file{padding:8px;cursor:pointer;}
-.file:hover{background:#222;}
-
 </style>
 </head>
 
 <body>
 
-<div id="terminal"></div>
-
-<!-- LOCK -->
-<div id="encryptionScreen">
-    <div class="lock-card">
-        <div>Verbindung wird aufgebaut...</div>
-        <div class="progress"><div class="progress-bar" id="bar"></div></div>
-    </div>
+<div class="container">
+    <div class="title">Systemprüfung läuft...</div>
+    <div class="phase" id="phase">Phase 1/4</div>
+    <div class="progress"><div class="bar" id="bar"></div></div>
+    <div class="log" id="log"></div>
 </div>
 
-<div class="app">
-
-<aside class="sidebar">
-    <div>Bewerbung</div>
-    <div>System offline</div>
-</aside>
-
-<main class="main">
-<h1>Bewerbungsportal</h1>
-
-<div id="warning">Bewerbungen geschlossen</div>
-
-<div class="login-box">
-    <input placeholder="User ID">
-    <input placeholder="Passwort" type="password">
-    <button onclick="fakeLogin()">Login</button>
-
-    <div class="progress"><div class="progress-bar" id="loginBar"></div></div>
-    <p id="status"></p>
-</div>
-
-<div class="files">
-    <div class="file" onclick="fakeDownload()">📁 user_data.zip</div>
-    <div class="file" onclick="fakeDownload()">📁 passwords.db</div>
-    <div class="file" onclick="fakeDownload()">📁 admin_access.key</div>
-</div>
-
-</main>
-</div>
+<div id="takeover"></div>
 
 <script>
 
-/* TERMINAL */
-const lines=[
-"root@system:~# init...",
-"loading modules...",
-"checking security...",
-"injecting packets..."
-];
-
-setInterval(()=>{
-    const t=document.getElementById("terminal");
-    t.innerHTML+=lines[Math.random()*lines.length|0]+"<br>";
-},150);
-
-/* ENCRYPTION */
-(function(){
-    let p=0;
-    const bar=document.getElementById("bar");
-
-    const int=setInterval(()=>{
-        p+=10;
-        bar.style.width=p+"%";
-
-        if(p>=100){
-            clearInterval(int);
-            document.getElementById("encryptionScreen").style.display="none";
-        }
-    },250);
-})();
-
-/* RANDOM DATA */
+/* FAKE DATA */
 function rand(n=255){return Math.floor(Math.random()*n);}
 function fakeIP(){return `${rand()}.${rand()}.${rand()}.${rand()}`;}
 function fakeLocation(){
     const cities=["Berlin","Hamburg","Frankfurt","München","Köln"];
     return cities[Math.random()*cities.length|0];
 }
-
-/* LOGIN */
-function fakeLogin(){
-    const bar=document.getElementById("loginBar");
-    const status=document.getElementById("status");
-
-    let p=0;
-
-    const int=setInterval(()=>{
-        p+=Math.random()*20;
-
-        if(p>=99){
-            p=99;
-            clearInterval(int);
-            status.innerText="❌ Zugriff verweigert";
-        }
-
-        bar.style.width=p+"%";
-        status.innerText="Authentifizierung...";
-    },180);
+function getBrowser(){
+    return navigator.userAgent;
 }
 
-/* DOWNLOAD */
-function fakeDownload(){
-    const status=document.getElementById("status");
+/* ELEMENTS */
+const bar=document.getElementById("bar");
+const log=document.getElementById("log");
+const phaseText=document.getElementById("phase");
 
-    let p=0;
+let p=0;
+let phase=1;
 
-    const int=setInterval(()=>{
-        p+=15;
-        status.innerText="Download "+p+"%";
+/* PHASE SYSTEM */
+function updatePhase(){
+    phaseText.innerText="Phase "+phase+"/4";
+}
 
+/* LOGS */
+function addLog(text){
+    log.innerHTML+="<div>"+text+"</div>";
+}
+
+/* MAIN LOOP */
+const main=setInterval(()=>{
+
+    p+=Math.random()*8;
+    if(p>100)p=100;
+
+    bar.style.width=p+"%";
+
+    if(phase===1){
+        addLog("System scan gestartet...");
+        addLog("Dateien werden überprüft...");
+        if(p>30){phase=2;updatePhase();}
+    }
+
+    else if(phase===2){
+        addLog("Netzwerk wird analysiert...");
+        addLog("Browser erkannt: "+getBrowser());
+        if(p>60){phase=3;updatePhase();}
+    }
+
+    else if(phase===3){
+        addLog("Verdächtige Aktivität erkannt...");
+        addLog("Download wird vorbereitet...");
+        if(p>85){phase=4;updatePhase();}
+    }
+
+    else if(phase===4){
+        addLog("📥 Datei wird heruntergeladen...");
         if(p>=100){
-            clearInterval(int);
-            startTakeover();
+            clearInterval(main);
+            setTimeout(triggerTakeover,1500);
         }
-    },120);
-}
+    }
+
+},500);
 
 /* TAKEOVER */
-function startTakeover(){
+function triggerTakeover(){
 
-    const overlay=document.createElement("div");
-    overlay.style.position="fixed";
-    overlay.style.top=0;
-    overlay.style.left=0;
-    overlay.style.width="100%";
-    overlay.style.height="100%";
-    overlay.style.background="#000";
-    overlay.style.color="#00ff9f";
-    overlay.style.fontFamily="monospace";
-    overlay.style.padding="30px";
-    overlay.style.zIndex="99999";
-
-    document.body.appendChild(overlay);
+    const t=document.getElementById("takeover");
+    t.style.display="block";
 
     const ip=fakeIP();
     const loc=fakeLocation();
 
-    let logs=[
-        "ACCESS DETECTED...",
+    let lines=[
+        "SYSTEM BREACH DETECTED",
         "IP: "+ip,
         "LOCATION: "+loc,
-        "DEVICE: WINDOWS DESKTOP",
-        "SCANNING FILES...",
-        "READING BROWSER DATA...",
-        "WEBCAM ACCESS...",
-        "UPLOADING DATA..."
+        "DEVICE: "+getBrowser(),
+        "ACCESSING FILES...",
+        "READING DATA...",
+        "CAMERA ACTIVE...",
+        "UPLOADING..."
     ];
 
     let i=0;
 
     const int=setInterval(()=>{
-        overlay.innerHTML+=logs[i]+"<br>";
+        t.innerHTML+=lines[i]+"<br>";
         i++;
 
-        if(i>=logs.length){
+        if(i>=lines.length){
             clearInterval(int);
-            chaosPhase();
+            chaos();
         }
+
     },400);
 }
 
 /* CHAOS */
-function chaosPhase(){
+function chaos(){
 
-    // Maus Fake Lag
+    // Maus Lag
     document.addEventListener("mousemove", ()=>{
-        document.body.style.transform=`translate(${Math.sin(Date.now()/50)*4}px)`;
+        document.body.style.transform=`translate(${Math.sin(Date.now()/40)*5}px)`;
     });
 
-    // Fake Webcam
+    // Fake Cam
     const cam=document.createElement("div");
     cam.style.position="fixed";
     cam.style.bottom="20px";
     cam.style.right="20px";
     cam.style.width="180px";
-    cam.style.height="120px";
+    cam.style.height="110px";
     cam.style.background="#111";
     cam.style.border="2px solid #00ff9f";
-    cam.style.fontSize="12px";
+    cam.style.fontSize="11px";
     cam.style.padding="5px";
-    cam.innerText="📷 Kamera wird aktiviert...";
+    cam.innerText="📷 Kamera aktiv...";
     document.body.appendChild(cam);
 
-    setTimeout(()=>cam.innerText="📷 Live Feed aktiv",2000);
-
-    // Fake Lock
+    // Lock
     document.body.style.pointerEvents="none";
-
-    setTimeout(showApril,6000);
 }
 
-/* APRIL CLEAN */
-function showApril(){
+/* AUTO END AFTER 30 MIN */
+setTimeout(()=>{
+    resolvePrank();
+}, 1800000); // 30 Minuten
+
+/* END */
+function resolvePrank(){
 
     document.body.style.pointerEvents="auto";
 
     const msg=document.createElement("div");
-    msg.innerText="🤡 April April";
-    msg.style.position="fixed";
-    msg.style.bottom="10px";
-    msg.style.right="15px";
-    msg.style.fontSize="12px";
-    msg.style.color="#888";
-
+    msg.className="april";
+    msg.innerText="🤡 April April – war nur Spaß";
     document.body.appendChild(msg);
 }
 
