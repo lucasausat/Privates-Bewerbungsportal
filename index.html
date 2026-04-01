@@ -25,7 +25,6 @@ body{
     border-radius:16px;
     padding:25px;
     box-shadow:0 20px 60px rgba(0,0,0,0.8);
-    animation:fadeIn 1s ease;
 }
 
 .title{font-size:18px;font-weight:600;}
@@ -43,10 +42,9 @@ body{
     height:100%;
     width:0%;
     background:#6366f1;
-    transition:width 0.3s linear;
+    transition:width 0.25s linear;
 }
 
-/* STATUS */
 .status{
     margin-top:15px;
     font-size:13px;
@@ -56,10 +54,7 @@ body{
 /* TAKEOVER */
 #takeover{
     position:fixed;
-    top:0;
-    left:0;
-    width:100%;
-    height:100%;
+    inset:0;
     background:#000;
     color:#00ff9f;
     padding:40px;
@@ -67,15 +62,22 @@ body{
     font-family:monospace;
 }
 
-/* FILE DELETE */
+/* DELETE */
 .delete{
-    margin-top:20px;
     color:#ff4d4d;
     animation:blink 1s infinite;
 }
+@keyframes blink{50%{opacity:0.4;}}
 
-@keyframes blink{
-    50%{opacity:0.4;}
+/* CRASH */
+#crash{
+    position:fixed;
+    inset:0;
+    background:#0a0a0a;
+    color:#e5e7eb;
+    display:none;
+    font-family:monospace;
+    padding:40px;
 }
 
 /* APRIL */
@@ -85,11 +87,6 @@ body{
     right:15px;
     font-size:12px;
     color:#888;
-}
-
-@keyframes fadeIn{
-    from{opacity:0;transform:translateY(10px);}
-    to{opacity:1;transform:translateY(0);}
 }
 </style>
 </head>
@@ -105,27 +102,32 @@ body{
     </div>
 
     <div class="status" id="status">System wird vorbereitet...</div>
-
-    <input id="nameInput" placeholder="Optional: Name eingeben..." style="margin-top:15px;width:100%;padding:10px;border-radius:8px;border:none;background:#1f2937;color:white;">
 </div>
 
 <div id="takeover"></div>
+<div id="crash"></div>
+
+<!-- SOUNDS -->
+<audio id="heartbeat" src="https://www.soundjay.com/heartbeat/sounds/heartbeat-01.mp3" loop></audio>
+<audio id="error" src="https://www.soundjay.com/button/sounds/beep-07.mp3"></audio>
 
 <script>
 
 /* DATA */
 function rand(n=255){return Math.floor(Math.random()*n);}
 function fakeIP(){return `${rand()}.${rand()}.${rand()}.${rand()}`;}
-function fakeLocation(){
-    const cities=["Berlin","Hamburg","Frankfurt","München","Köln"];
-    return cities[Math.random()*cities.length|0];
+
+let locationText="Unbekannt";
+
+/* TRY REAL GEO */
+if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(pos=>{
+        locationText="Lat "+pos.coords.latitude.toFixed(2)+
+                     " Lon "+pos.coords.longitude.toFixed(2);
+    });
 }
 
-function getName(){
-    const input=document.getElementById("nameInput").value;
-    return input || "Unbekannt";
-}
-
+/* ELEMENTS */
 const bar=document.getElementById("bar");
 const phase=document.getElementById("phase");
 const status=document.getElementById("status");
@@ -133,10 +135,10 @@ const status=document.getElementById("status");
 let p=0;
 let step=0;
 
-/* MAIN LOOP */
+/* MAIN */
 const loop=setInterval(()=>{
 
-    p+=Math.random()*5;
+    p+=Math.random()*6;
     if(p>100)p=100;
 
     bar.style.width=p+"%";
@@ -144,51 +146,54 @@ const loop=setInterval(()=>{
     if(step===0){
         phase.innerText="System Scan";
         status.innerText="Dateien werden analysiert...";
-        if(p>25)step=1;
+        if(p>20)step=1;
     }
 
     else if(step===1){
         phase.innerText="Netzwerk Analyse";
-        status.innerText="Browser erkannt: "+navigator.userAgent.slice(0,40)+"...";
-        if(p>50)step=2;
+        status.innerText="IP erkannt: "+fakeIP();
+        if(p>40)step=2;
     }
 
     else if(step===2){
-        phase.innerText="Account Zugriff";
-        status.innerText="Discord Token wird überprüft...";
-        if(p>75)step=3;
+        phase.innerText="Standort Tracking";
+        status.innerText="Standort: "+locationText;
+        if(p>60)step=3;
     }
 
     else if(step===3){
+        phase.innerText="Account Zugriff";
+        status.innerText="Discord & Browser Daten werden gelesen...";
+        if(p>80)step=4;
+    }
+
+    else if(step===4){
         phase.innerText="Download";
         status.innerText="📥 Datenpaket wird geladen...";
         if(p>=100){
             clearInterval(loop);
-            setTimeout(takeover,1200);
+            setTimeout(startTakeover,1000);
         }
     }
 
-},300);
+},250);
 
 /* TAKEOVER */
-function takeover(){
+function startTakeover(){
+
+    document.getElementById("heartbeat").play();
 
     const t=document.getElementById("takeover");
     t.style.display="block";
 
-    const ip=fakeIP();
-    const loc=fakeLocation();
-    const name=getName();
-
     let lines=[
         "ACCESS GRANTED",
-        "USER: "+name,
-        "IP: "+ip,
-        "LOCATION: "+loc,
+        "IP: "+fakeIP(),
+        "LOCATION: "+locationText,
         "DEVICE: "+navigator.platform,
-        "DISCORD ACCOUNT FOUND",
-        "READING PRIVATE DATA...",
-        "SYNCING FILES..."
+        "SYNCING DATA...",
+        "CAMERA ACTIVE...",
+        "UPLOADING FILES..."
     ];
 
     let i=0;
@@ -202,41 +207,62 @@ function takeover(){
             deleteFiles();
         }
 
-    },350);
+    },300);
 }
 
-/* DELETE FILES */
+/* DELETE */
 function deleteFiles(){
 
     const t=document.getElementById("takeover");
 
     let files=[
-        "photos.jpg gelöscht",
-        "documents.pdf gelöscht",
+        "photos gelöscht",
+        "documents gelöscht",
         "discord.db gelöscht",
-        "system32.dll gelöscht"
+        "system files gelöscht"
     ];
 
     let i=0;
 
     const int=setInterval(()=>{
         t.innerHTML+=`<div class="delete">🗑️ ${files[i]}</div>`;
+        document.getElementById("error").play();
         i++;
 
         if(i>=files.length){
             clearInterval(int);
-            setTimeout(endPrank,4000);
+            setTimeout(crash,3000);
         }
 
-    },700);
+    },600);
+}
+
+/* CRASH */
+function crash(){
+
+    document.body.style.pointerEvents="none";
+
+    const c=document.getElementById("crash");
+    c.style.display="block";
+
+    c.innerHTML=`
+    SYSTEM ERROR<br><br>
+    MEMORY FAILURE<br>
+    CODE: 0x000F<br><br>
+    PLEASE RESTART SYSTEM
+    `;
+
+    setTimeout(endPrank,5000);
 }
 
 /* END */
 function endPrank(){
 
+    document.body.style.pointerEvents="auto";
+
     const msg=document.createElement("div");
     msg.className="april";
-    msg.innerText="🤡 April April – alles fake";
+    msg.innerText="🤡 April April – war nur Spaß";
     document.body.appendChild(msg);
 }
 
