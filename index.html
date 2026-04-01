@@ -8,7 +8,7 @@
 <style>
 body{
     margin:0;
-    background:#0b0c10;
+    background:#000;
     color:#e5e7eb;
     font-family:system-ui;
     display:flex;
@@ -18,13 +18,34 @@ body{
     overflow:hidden;
 }
 
+/* GLITCH BACKGROUND */
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:repeating-linear-gradient(
+        0deg,
+        rgba(255,255,255,0.02) 0px,
+        rgba(255,255,255,0.02) 1px,
+        transparent 1px,
+        transparent 2px
+    );
+    pointer-events:none;
+}
+
 /* CARD */
 .card{
     width:420px;
-    background:#111317;
+    background:#0d0f14;
     border-radius:16px;
     padding:25px;
-    box-shadow:0 20px 60px rgba(0,0,0,0.8);
+    box-shadow:0 0 60px rgba(99,102,241,0.2);
+    animation:fadeIn 1s ease;
+}
+
+@keyframes fadeIn{
+    from{opacity:0;transform:scale(0.95);}
+    to{opacity:1;transform:scale(1);}
 }
 
 .title{font-size:18px;font-weight:600;}
@@ -42,7 +63,7 @@ body{
     height:100%;
     width:0%;
     background:#6366f1;
-    transition:width 0.25s linear;
+    transition:width 0.2s linear;
 }
 
 .status{
@@ -51,7 +72,7 @@ body{
     color:#9ca3af;
 }
 
-/* TAKEOVER */
+/* TERMINAL */
 #takeover{
     position:fixed;
     inset:0;
@@ -60,24 +81,39 @@ body{
     padding:40px;
     display:none;
     font-family:monospace;
+    font-size:14px;
+}
+
+/* GLITCH TEXT */
+.glitch{
+    color:#ff4d4d;
+    animation:glitch 0.2s infinite;
+}
+
+@keyframes glitch{
+    0%{transform:translate(1px,0);}
+    50%{transform:translate(-1px,0);}
+    100%{transform:translate(1px,0);}
 }
 
 /* DELETE */
 .delete{
-    color:#ff4d4d;
-    animation:blink 1s infinite;
+    color:#ff0000;
+    animation:blink 0.7s infinite;
 }
-@keyframes blink{50%{opacity:0.4;}}
+
+@keyframes blink{50%{opacity:0.2;}}
 
 /* CRASH */
 #crash{
     position:fixed;
     inset:0;
-    background:#0a0a0a;
+    background:#050505;
     color:#e5e7eb;
     display:none;
     font-family:monospace;
     padding:40px;
+    font-size:16px;
 }
 
 /* APRIL */
@@ -107,19 +143,17 @@ body{
 <div id="takeover"></div>
 <div id="crash"></div>
 
-<!-- SOUNDS -->
 <audio id="heartbeat" src="https://www.soundjay.com/heartbeat/sounds/heartbeat-01.mp3" loop></audio>
 <audio id="error" src="https://www.soundjay.com/button/sounds/beep-07.mp3"></audio>
 
 <script>
 
-/* DATA */
+/* HELPERS */
 function rand(n=255){return Math.floor(Math.random()*n);}
 function fakeIP(){return `${rand()}.${rand()}.${rand()}.${rand()}`;}
 
+/* GEO */
 let locationText="Unbekannt";
-
-/* TRY REAL GEO */
 if(navigator.geolocation){
     navigator.geolocation.getCurrentPosition(pos=>{
         locationText="Lat "+pos.coords.latitude.toFixed(2)+
@@ -135,48 +169,46 @@ const status=document.getElementById("status");
 let p=0;
 let step=0;
 
-/* MAIN */
+/* INTENSE START DELAY */
+setTimeout(()=>{
+
 const loop=setInterval(()=>{
 
-    p+=Math.random()*6;
+    p+=Math.random()*8;
     if(p>100)p=100;
 
     bar.style.width=p+"%";
 
     if(step===0){
-        phase.innerText="System Scan";
-        status.innerText="Dateien werden analysiert...";
-        if(p>20)step=1;
+        phase.innerText="Deep Scan";
+        status.innerText="Kernel wird analysiert...";
+        if(p>25)step=1;
     }
 
     else if(step===1){
-        phase.innerText="Netzwerk Analyse";
-        status.innerText="IP erkannt: "+fakeIP();
-        if(p>40)step=2;
+        phase.innerText="Netzwerk Zugriff";
+        status.innerText="Verbinde zu "+fakeIP();
+        if(p>50)step=2;
     }
 
     else if(step===2){
         phase.innerText="Standort Tracking";
-        status.innerText="Standort: "+locationText;
-        if(p>60)step=3;
+        status.innerText="Zugriff auf GPS...";
+        if(p>75)step=3;
     }
 
     else if(step===3){
-        phase.innerText="Account Zugriff";
-        status.innerText="Discord & Browser Daten werden gelesen...";
-        if(p>80)step=4;
-    }
-
-    else if(step===4){
-        phase.innerText="Download";
-        status.innerText="📥 Datenpaket wird geladen...";
+        phase.innerText="Root Zugriff";
+        status.innerText="Adminrechte erhalten...";
         if(p>=100){
             clearInterval(loop);
-            setTimeout(startTakeover,1000);
+            setTimeout(startTakeover,800);
         }
     }
 
-},250);
+},200);
+
+},1500);
 
 /* TAKEOVER */
 function startTakeover(){
@@ -187,13 +219,14 @@ function startTakeover(){
     t.style.display="block";
 
     let lines=[
-        "ACCESS GRANTED",
-        "IP: "+fakeIP(),
-        "LOCATION: "+locationText,
-        "DEVICE: "+navigator.platform,
-        "SYNCING DATA...",
-        "CAMERA ACTIVE...",
-        "UPLOADING FILES..."
+        ">>> ACCESS GRANTED",
+        ">>> IP: "+fakeIP(),
+        ">>> LOCATION: "+locationText,
+        ">>> DEVICE: "+navigator.platform,
+        ">>> SYNCING FILES...",
+        ">>> CAMERA ENABLED",
+        ">>> MICROPHONE ACTIVE",
+        ">>> UPLOADING DATA..."
     ];
 
     let i=0;
@@ -207,7 +240,7 @@ function startTakeover(){
             deleteFiles();
         }
 
-    },300);
+    },250);
 }
 
 /* DELETE */
@@ -216,49 +249,45 @@ function deleteFiles(){
     const t=document.getElementById("takeover");
 
     let files=[
-        "photos gelöscht",
-        "documents gelöscht",
-        "discord.db gelöscht",
-        "system files gelöscht"
+        "photos",
+        "documents",
+        "discord.db",
+        "system32"
     ];
 
     let i=0;
 
     const int=setInterval(()=>{
-        t.innerHTML+=`<div class="delete">🗑️ ${files[i]}</div>`;
+        t.innerHTML+=`<div class="delete">DELETING ${files[i]}...</div>`;
         document.getElementById("error").play();
         i++;
 
         if(i>=files.length){
             clearInterval(int);
-            setTimeout(crash,3000);
+            setTimeout(crash,2000);
         }
 
-    },600);
+    },500);
 }
 
 /* CRASH */
 function crash(){
 
-    document.body.style.pointerEvents="none";
-
     const c=document.getElementById("crash");
     c.style.display="block";
 
     c.innerHTML=`
-    SYSTEM ERROR<br><br>
-    MEMORY FAILURE<br>
+    <div class="glitch">SYSTEM FAILURE</div><br><br>
+    MEMORY CORRUPTED<br>
     CODE: 0x000F<br><br>
-    PLEASE RESTART SYSTEM
+    REBOOT REQUIRED
     `;
 
-    setTimeout(endPrank,5000);
+    setTimeout(endPrank,4000);
 }
 
 /* END */
 function endPrank(){
-
-    document.body.style.pointerEvents="auto";
 
     const msg=document.createElement("div");
     msg.className="april";
