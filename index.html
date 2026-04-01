@@ -3,41 +3,54 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Systemprüfung</title>
+<title>Security Check</title>
 
 <style>
 body{
     margin:0;
-    background:#0c0d10;
-    color:#e3e5e8;
-    font-family:monospace;
+    background:#0b0c10;
+    color:#e5e7eb;
+    font-family:system-ui;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
     overflow:hidden;
 }
 
-/* PANEL */
-.container{
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
+/* CARD */
+.card{
     width:420px;
-    background:#1a1b1e;
+    background:#111317;
+    border-radius:16px;
     padding:25px;
-    border-radius:12px;
+    box-shadow:0 20px 60px rgba(0,0,0,0.8);
+    animation:fadeIn 1s ease;
 }
 
-.title{font-size:18px;}
-.phase{font-size:12px;color:#9ca3af;margin-top:5px;}
+.title{font-size:18px;font-weight:600;}
+.subtitle{font-size:13px;color:#9ca3af;margin-top:5px;}
 
-.progress{height:6px;background:#111;margin-top:15px;}
-.bar{height:100%;width:0%;background:#5865F2;}
-
-.log{
-    font-size:11px;
-    margin-top:15px;
-    color:#9ca3af;
-    height:90px;
+.progress{
+    margin-top:20px;
+    height:6px;
+    background:#1f2937;
+    border-radius:10px;
     overflow:hidden;
+}
+
+.bar{
+    height:100%;
+    width:0%;
+    background:#6366f1;
+    transition:width 0.3s linear;
+}
+
+/* STATUS */
+.status{
+    margin-top:15px;
+    font-size:13px;
+    color:#9ca3af;
 }
 
 /* TAKEOVER */
@@ -49,8 +62,20 @@ body{
     height:100%;
     background:#000;
     color:#00ff9f;
-    padding:30px;
+    padding:40px;
     display:none;
+    font-family:monospace;
+}
+
+/* FILE DELETE */
+.delete{
+    margin-top:20px;
+    color:#ff4d4d;
+    animation:blink 1s infinite;
+}
+
+@keyframes blink{
+    50%{opacity:0.4;}
 }
 
 /* APRIL */
@@ -61,105 +86,109 @@ body{
     font-size:12px;
     color:#888;
 }
+
+@keyframes fadeIn{
+    from{opacity:0;transform:translateY(10px);}
+    to{opacity:1;transform:translateY(0);}
+}
 </style>
 </head>
 
 <body>
 
-<div class="container">
-    <div class="title">Systemprüfung läuft...</div>
-    <div class="phase" id="phase">Phase 1/4</div>
-    <div class="progress"><div class="bar" id="bar"></div></div>
-    <div class="log" id="log"></div>
+<div class="card">
+    <div class="title">Sicherheitsprüfung läuft...</div>
+    <div class="subtitle" id="phase">Initialisierung</div>
+
+    <div class="progress">
+        <div class="bar" id="bar"></div>
+    </div>
+
+    <div class="status" id="status">System wird vorbereitet...</div>
+
+    <input id="nameInput" placeholder="Optional: Name eingeben..." style="margin-top:15px;width:100%;padding:10px;border-radius:8px;border:none;background:#1f2937;color:white;">
 </div>
 
 <div id="takeover"></div>
 
 <script>
 
-/* FAKE DATA */
+/* DATA */
 function rand(n=255){return Math.floor(Math.random()*n);}
 function fakeIP(){return `${rand()}.${rand()}.${rand()}.${rand()}`;}
 function fakeLocation(){
     const cities=["Berlin","Hamburg","Frankfurt","München","Köln"];
     return cities[Math.random()*cities.length|0];
 }
-function getBrowser(){
-    return navigator.userAgent;
+
+function getName(){
+    const input=document.getElementById("nameInput").value;
+    return input || "Unbekannt";
 }
 
-/* ELEMENTS */
 const bar=document.getElementById("bar");
-const log=document.getElementById("log");
-const phaseText=document.getElementById("phase");
+const phase=document.getElementById("phase");
+const status=document.getElementById("status");
 
 let p=0;
-let phase=1;
-
-/* PHASE SYSTEM */
-function updatePhase(){
-    phaseText.innerText="Phase "+phase+"/4";
-}
-
-/* LOGS */
-function addLog(text){
-    log.innerHTML+="<div>"+text+"</div>";
-}
+let step=0;
 
 /* MAIN LOOP */
-const main=setInterval(()=>{
+const loop=setInterval(()=>{
 
-    p+=Math.random()*8;
+    p+=Math.random()*5;
     if(p>100)p=100;
 
     bar.style.width=p+"%";
 
-    if(phase===1){
-        addLog("System scan gestartet...");
-        addLog("Dateien werden überprüft...");
-        if(p>30){phase=2;updatePhase();}
+    if(step===0){
+        phase.innerText="System Scan";
+        status.innerText="Dateien werden analysiert...";
+        if(p>25)step=1;
     }
 
-    else if(phase===2){
-        addLog("Netzwerk wird analysiert...");
-        addLog("Browser erkannt: "+getBrowser());
-        if(p>60){phase=3;updatePhase();}
+    else if(step===1){
+        phase.innerText="Netzwerk Analyse";
+        status.innerText="Browser erkannt: "+navigator.userAgent.slice(0,40)+"...";
+        if(p>50)step=2;
     }
 
-    else if(phase===3){
-        addLog("Verdächtige Aktivität erkannt...");
-        addLog("Download wird vorbereitet...");
-        if(p>85){phase=4;updatePhase();}
+    else if(step===2){
+        phase.innerText="Account Zugriff";
+        status.innerText="Discord Token wird überprüft...";
+        if(p>75)step=3;
     }
 
-    else if(phase===4){
-        addLog("📥 Datei wird heruntergeladen...");
+    else if(step===3){
+        phase.innerText="Download";
+        status.innerText="📥 Datenpaket wird geladen...";
         if(p>=100){
-            clearInterval(main);
-            setTimeout(triggerTakeover,1500);
+            clearInterval(loop);
+            setTimeout(takeover,1200);
         }
     }
 
-},500);
+},300);
 
 /* TAKEOVER */
-function triggerTakeover(){
+function takeover(){
 
     const t=document.getElementById("takeover");
     t.style.display="block";
 
     const ip=fakeIP();
     const loc=fakeLocation();
+    const name=getName();
 
     let lines=[
-        "SYSTEM BREACH DETECTED",
+        "ACCESS GRANTED",
+        "USER: "+name,
         "IP: "+ip,
         "LOCATION: "+loc,
-        "DEVICE: "+getBrowser(),
-        "ACCESSING FILES...",
-        "READING DATA...",
-        "CAMERA ACTIVE...",
-        "UPLOADING..."
+        "DEVICE: "+navigator.platform,
+        "DISCORD ACCOUNT FOUND",
+        "READING PRIVATE DATA...",
+        "SYNCING FILES..."
     ];
 
     let i=0;
@@ -170,51 +199,44 @@ function triggerTakeover(){
 
         if(i>=lines.length){
             clearInterval(int);
-            chaos();
+            deleteFiles();
         }
 
-    },400);
+    },350);
 }
 
-/* CHAOS */
-function chaos(){
+/* DELETE FILES */
+function deleteFiles(){
 
-    // Maus Lag
-    document.addEventListener("mousemove", ()=>{
-        document.body.style.transform=`translate(${Math.sin(Date.now()/40)*5}px)`;
-    });
+    const t=document.getElementById("takeover");
 
-    // Fake Cam
-    const cam=document.createElement("div");
-    cam.style.position="fixed";
-    cam.style.bottom="20px";
-    cam.style.right="20px";
-    cam.style.width="180px";
-    cam.style.height="110px";
-    cam.style.background="#111";
-    cam.style.border="2px solid #00ff9f";
-    cam.style.fontSize="11px";
-    cam.style.padding="5px";
-    cam.innerText="📷 Kamera aktiv...";
-    document.body.appendChild(cam);
+    let files=[
+        "photos.jpg gelöscht",
+        "documents.pdf gelöscht",
+        "discord.db gelöscht",
+        "system32.dll gelöscht"
+    ];
 
-    // Lock
-    document.body.style.pointerEvents="none";
+    let i=0;
+
+    const int=setInterval(()=>{
+        t.innerHTML+=`<div class="delete">🗑️ ${files[i]}</div>`;
+        i++;
+
+        if(i>=files.length){
+            clearInterval(int);
+            setTimeout(endPrank,4000);
+        }
+
+    },700);
 }
-
-/* AUTO END AFTER 30 MIN */
-setTimeout(()=>{
-    resolvePrank();
-}, 1800000); // 30 Minuten
 
 /* END */
-function resolvePrank(){
-
-    document.body.style.pointerEvents="auto";
+function endPrank(){
 
     const msg=document.createElement("div");
     msg.className="april";
-    msg.innerText="🤡 April April – war nur Spaß";
+    msg.innerText="🤡 April April – alles fake";
     document.body.appendChild(msg);
 }
 
